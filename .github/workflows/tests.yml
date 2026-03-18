@@ -72,7 +72,7 @@ jobs:
           BROWSER: ${{ inputs.BROWSER }}
           STAGE: ${{ secrets.STAGE }}
         run: |
-          docker compose up tests
+          docker compose up smoke
 
       # Шаг 4 - Копирование истории
 
