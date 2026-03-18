@@ -1,0 +1,13 @@
+[ {
+  "values" : [ "main" ],
+  "name" : "Branch"
+}, {
+  "values" : [ "58e585a15f4b420f8d4a03f7b6261396a62091f3" ],
+  "name" : "Commit"
+}, {
+  "values" : [ "chrome" ],
+  "name" : "Browser"
+}, {
+  "values" : [ "https://demo5.openteknik.com" ],
+  "name" : "Stage"
+} ]
