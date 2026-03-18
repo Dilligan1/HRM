@@ -9,7 +9,7 @@ services:
     volumes:
       - ./:/usr/workspace
       - /dev/shm:/dev/shm
-    command: /bin/sh -c "BROWSER=$$BROWSER pytest -sv -o log_cli=true -n=$$THREADS --m=$$MARKER --alluredir=allure-results"
+    command: /bin/sh -c "BROWSER=$$BROWSER pytest -sv -o log_cli=true -n=$$THREADS -m=$$MARKER --alluredir=allure-results"
     environment:
       BROWSER: ${BROWSER:-chrome}
       MARKER: ${MARKER:-smoke}
