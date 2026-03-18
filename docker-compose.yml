@@ -1,0 +1,30 @@
+services:
+
+  smoke:
+    image: rs-test:v1
+    build:
+      context: .
+      dockerfile: Dockerfile
+    shm_size: 2gb
+    volumes:
+      - ./:/usr/workspace
+      - /dev/shm:/dev/shm
+    command: /bin/sh -c "BROWSER=$$BROWSER pytest -sv -o log_cli=true -n=$$THREADS --m=$$MARKER --alluredir=allure-results"
+    environment:
+      BROWSER: ${BROWSER:-chrome}
+      MARKER: ${MARKER:-smoke}
+      THREADS: ${THREADS:-4}
+    tty: true
+
+  report:
+    image: rs-test:v1
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+
+      - ./:/usr/workspace
+    command: /bin/sh -c "ls -la && allure generate allure-results --clean -o allure-report"
+    working_dir: /usr/workspace
+
+

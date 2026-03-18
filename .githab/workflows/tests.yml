@@ -1,0 +1,76 @@
+name: UI Tests
+
+run-name: Test ${{ github.event.inputs.STAGE }} | ${{ github.event.inputs.MARKER }} marker | ${{ github.event.inputs.THREADS }} threads
+
+on:
+  workflow_dispatch:
+    ENV:
+      description: "Choose environment"
+      required: true
+
+  MARKER:
+    ENV:
+      description: "Select pytest marker"
+      required: true
+      default: "smoke"
+      options:
+        - smoke
+        - regression
+
+  THREADS:
+    ENV:
+      description: "Select threads count"
+      required: false
+      default: "1"
+      options:
+        - 3
+        - 5
+
+jobs:
+
+  ui-tests:
+    runs-on: ubuntu-latest
+    environments: ${( inputs.ENV )}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          path: ./.github/gh-pages
+
+      - name: Prepare Allure environment
+        run: |
+          mkdir -p allure-results
+          echo "Branch=${{ github.ref_name }}" > allure-results/environment.properties
+          echo "Commit=${{ github.sha }}" >> allure-results/environment.properties
+          echo "Browser=${{ inputs.BROWSER }}" >> allure-results/environment.properties
+          echo "Environments=${{ secrets.ENV }}" >> allure-results/environment.properties
+
+      - name: Run UI tests via docker
+        env:
+          STAGE: ${ (secrets.STAGE) }
+        run: docker compose up tests
+
+      - name: Copy Allure history
+        run: |
+          mkdir -p allure-results/history
+          if [ -d "./.github/gh-pages/history" ]; then
+            cp -R ./.github/gh-pages/history/* allure-results/history/
+          fi
+
+      - name: Generate Allure-report
+        run: docker compose up report
+
+      - name: Copy Allure history
+        run: |
+          mkdir -p allure-results/history
+          if [ -d "./.github/gh-pages/history" ]; then
+            cp -R ./.github/gh-pages/history/* allure-results/history/
+          fi
+
+
+
+
+
